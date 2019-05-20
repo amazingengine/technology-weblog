@@ -1,0 +1,154 @@
+= Gatsbyの環境構築方法
+高橋 T
+v1.0, 2019-05-27 15:00
+:page-category: プログラミング
+:page-thumbnail: /images/Gatsbyの環境構築方法/gatsby-logo.jpg
+
+こんにちは。
+Amazing engineでフロントエンド・サーバーサイドを担当する高橋と申します。当ブログの開発担当者です。
+
+当ブログはAsciidocファイルをGatsbyで変換し、Netlifyにホスティングするという構成になっています。今回からこれの開発で得た知見などを発信できればと思います。
+
+今回はGatsbyをセットアップする流れを、初学者の方にもわかりやすくお話したいと思います。
+
+== Gatsbyを利用する準備
+Gatsbyを使うためには、主に以下の3つが必要になります。
+
+* Node.js
+* ターミナル/シェル/コマンドプロンプトでコマンド操作
+* gatsby-cli
+
+大まかな流れとして以下のような流れになります。
+
+. https://nodejs.org/ja/[Node.js公式サイト]でNode.jsのLTSをダウンロード・インストール
+. Node.jsに付属する``npm``というコマンドを使って、``gatsby-cli``をダウンロード
+. GatsbyのHello-worldテンプレートを生成
+
+Gatsby公式でも同様のチュートリアルですが、こちらではより簡単かつ絞り込んだものを提供できればと思います。
+
+
+== Gatsbyとは
+GatsbyはReactベースで作られた静的サイトジェネレータです。
+
+内的にGraphQLを使っている点がユニークで、すべてのデータをGraphQLに一度渡し、ReactとGatsbyがそこからデータを取得するシステムになっています。
+
+== Node.jsとは
+javascriptを用いた実行環境です。
+
+サーバー・スクレイピング・ページの生成など、数多くの事柄を実行することができます。
+
+GatsbyはNode.js上で起動・ページ生成を行っているため、必須の環境になります。
+
+== ターミナル/シェル/コマンドプロンプト
+コマンドインタプリタと呼ばれるもので、コマンドでコンピューターを操作することができます。
+
+image::Gatsbyの環境構築方法/Terminal.png[]
+
+こんな感じのやつです。真っ黒・真っ白な画面に、英数字が表示されるアレです。
+
+Node.jsやGatsbyを使うには必須になります。
+
+ちなみにターミナル/シェル/コマンドプロンプトは、それぞれMac/Linux/Windowsのコマンドインタプリタになります。
+
+== Node.jsのダウンロード・インストール
+https://www.gatsbyjs.org/tutorial/part-zero/#install-homebrew-for-nodejs[Gatsby公式サイト]ではコマンドを使った導入方法を紹介していますが、今回はGUIを使ってわかりやすく行いたいと思います。
+
+image::Gatsbyの環境構築方法/Node.js-public-site.png[]
+
+まずはhttps://nodejs.org/ja/[Node.js公式サイト]へ行き、``〜.〜.〜 LTS 推奨版``と書かれたボタンを押し、Node.jsのダウンロードを行います。
+
+image::Gatsbyの環境構築方法/Node.js-download.png[]
+
+ダウンロードされたファイルをクリックし、インストーラーを起動します。
+
+image::Gatsbyの環境構築方法/Node.js-installer1.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer2.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer3.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer4.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer5.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer6.png[]
+
+image::Gatsbyの環境構築方法/Node.js-installer7.png[]
+
+これでNode.jsのインストールが完了しました。
+
+ターミナルでNode.jsがインストールされたかを確認します。
+
+```CUI
+node -v
+```
+
+``v10.15.3``のように、Node.jsのバージョンが表示されれば成功です。
+
+
+== gatsby-cliのインストール
+
+いよいよGatsbyをダウンロードします。
+
+Gatsbyは``gatsby-cli``という名前で、``npm``というシステムに登録されています。
+
+``npm``はNode.jsに付属するパッケージ管理ソフトで、ターミナルから``npm install <パッケージ名>``と入力するだけで、簡単にパッケージをダウンロード・インストールできます。
+
+Node.jsがインストールできている場合は、既に``npm``もインストール済みです。ターミナルで確認してください。
+
+```ターミナル
+npm -v
+```
+
+``6.9.0``のような``npm``のバージョンが表示されるはずです。
+
+この``npm``で``gatsby-cli``をグローバル環境にインストールします。
+
+```ターミナル
+npm install -g gatsby-cli
+```
+
+※MacやLinuxの方は``permission error``が出ると思うので、コマンド文頭に``sudo``をつけてください
+
+※Macの方は、``XCode command line tools``が必要です。
+https://www.gatsbyjs.org/tutorial/part-zero/#mac-users-install-xcode-command-line-tools[Gatsby公式サイト]を確認してください。
+
+
+== GatsbyでHello world!
+準備が整いました。GatsbyでHello worldを表示したいと思います。
+
+```ターミナル
+gatsby new hello-world https://github.com/gatsbyjs/gatsby-starter-hello-world
+```
+
+このコマンドで、``hello-world``というフォルダ内にGatsbyのhello-worldテンプレートが生成されました。
+
+続いて``hello-world``フォルダ内に入り、Gatsbyで静的ページを生成します。
+
+```ターミナル
+cd hello-world
+```
+
+この``cd hello-world``というコマンドは、現在のディレクトリ内にある``hello-world``フォルダへ移動するコマンドです。
+
+```ターミナル
+gatsby develop
+```
+
+最後に``gatsby develop``でGatsbyにページを生成させます。
+
+これで``Compiled successfully.``が表示されれば、ローカル環境でGatsbyが実行されたはずです。
+
+http://localhost:8000[http://localhost:8000]にアクセスしてください。
+
+image::Gatsbyの環境構築方法/Hello-world.png[]
+
+このように``Hello world!``が表示されれば成功です。
+
+== まとめ
+これでGatsbyの環境構築は完了です。
+
+今回は``Hello world!``を表示するだけのページでしたが、Gatsby公式サイトではその他にもテンプレートが公開されています。
+https://www.gatsbyjs.org/starters/?v=2[Gatsby Starter Linbrary]から探してみてください。
+
+次回はGatsbyとAsciidocを使った環境構築を行いたいと思います。

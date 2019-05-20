@@ -1,0 +1,57 @@
+$navbar-dropdown-arrow: #545454;
+$navbar-dropdown-item-active-color: #545454;
+$navbar-tab-active-border-bottom-color: #545454;
+$navbar-tab-active-color: #545454;
+$navbar-tab-hover-border-bottom-color: #545454;
+$navbar-item-hover-color: #545454;
+
+html {
+
+}
+
+header {
+  
+  .navbar {
+    background: rgba(255, 255, 255, 0.8);
+  }
+}
+
+#main {
+  min-height: 1110px;
+  padding: 24px;
+
+  .card-image {
+
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      width: auto;
+      height: 100%;
+    }
+  }
+
+  span {
+    h1, h2, h3 {
+      margin: 64px 0px 16px 0px;
+    }
+    img {
+      margin: 32px 0px 16px 0px;
+    }
+    p {
+      margin: 0px 0px 10px 0px;
+    }
+    ul, ol {
+      margin: 16px 32px;
+    }
+    .listingblock {
+      margin: 32px;
+    }
+  }
+}
+
+@import "bulma";

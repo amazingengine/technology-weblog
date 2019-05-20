@@ -1,0 +1,20 @@
+// 記事は"/static/posts"ディレクトリに置く
+
+= Hello World
+// タイトル
+佐藤 太郎 <email@sample.com>
+// 姓 名 <メールアドレス(省略可)> 
+v1.0, 2012-03-01 00:00
+//ヴァージョン(省略可), 日時("YYYY-MM-DD HH:MM"の形式で記述)
+:page-category: プログラミング
+// カテゴリー([プログラミング、インフラ、ゲーム、社内、その他]から選択)
+:page-thumbnail: /images/cheetah.png
+// サムネイル("/images/(ファイル名)"の形式で記述)
+// 画像は"/static/images"に置く
+
+
+// ここから本文
+image::cheetah.png[]
+// 画像は"/static/images"に置く
+
+// その他はAsciidoc準拠
