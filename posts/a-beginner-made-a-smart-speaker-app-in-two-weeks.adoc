@@ -1,0 +1,965 @@
+= 全くの初心者がスマートスピーカーのアプリを2週間で作りました！
+cacapon
+v1.0, 2019-06-05 18:30
+:page-category: プログラミング
+:page-thumbnail: /images/cacapon/001/Google_Assistant_logo.png
+
+## <はじめに> +
+
+はじめましてこんにちは！ cacaponと申します～ +
+
+今回Amazing engineの技術ブログに +
+記載させてもらうことになりました～ +
+それで、何を載せるかという話になるのですが... +
+
+今回は私が作成した「Google Home」用アプリ +
+「 https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] 」について書いていきたいと思います♪
+
+今回アプリは、 +
+リリースに必要な**Action on google**から始まり、 +
+自然言語処理を行う**Dialogflow**、 +
+webフレームワークの**flask**など +
+など、色々なツールを組み合わせて作成しました！
+
+といっても、cacaponはそれらのツールは使ったことはありませんし、 +
+プログラミングもちょっとかじった程度です。
+
+もちろん、アプリのリリースもやったことありません…
+
+ほとんど無に等しい状態で +
+そんなアプリリリースまで出来るものなのか？ +
+と内心ひやひやだったのですが…
+
+なんと、**[red]#二週間#** で出来てしまいました♪ +
+
+そんな「RPGの道具屋」アプリがどんなものかというと…
+
+[blue]#レトロゲームでおなじみの道具屋の店員さん♪ +
+それをGoogle homeを使ってアイテムを買う…#
+
+という流れを再現してみてます♪
+
+どんなもんだと知りたい方は、 +
+是非こちらのRPGの道具屋のリンクをご確認ください♪ +
+↓↓ +
+https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋]
+
+
+今回のブログは「 https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] 」の作り方を通して
+どんな感じでツールを使ったのか？ +
+どんな感じで作ったのかを紹介していきたいと思います！
+このブログを通してアプリリリースの行う際の +
+開発の一助になれば良いなと思っています！
+
+
+それでは、そろそろ作り方を見ていきましょうか～ +
+少し長くなるかと思いますが、お付き合いいただけると嬉しいです♪
+
+## <必要なもの>
+google アカウント　(Action on GoogleとDialogflowで使います～) +
+heroku アカウント　(本アプリはheroku環境で動作させています～) +
+nglok　(デプロイ前の動作確認で使います～) +
+git (本ブログ内ではあまり触れていませんが、ソースコードのバージョン管理で利用しました～) +
+プログラミングの知識　(本アプリではpythonを使います～)
+
+
+## <使用するアプリの準備>
+今回主に使っていく、Action on Googleと +
+Dialogflowの準備の仕方を説明していきます～
+
+## =Action on Googleでプロジェクトを作る= +
+
+最初にGoogle home を動かすアプリのプロジェクトを作ってみましょう～ +
+https://developers.google.com/actions/?hl=ja[Action on google] のページに行き、 +
+
+右上あたりにこんなボタンがあるので押してください～ +
+(googleのアカウントが必要になりますので、作っておいてください～)
+
+image::cacapon/001/0.png[]
+
+
+1.まず、Add/import projectを選びます～
+
+image::cacapon/001/1.png[]
+
+* 初回だと下の画面が出ます～
+
+image::cacapon/001/2.png[]
+
+* 翻訳内容するとこんな感じになるので、 +
+  赤枠の通りに設定してください～
+
+image::cacapon/001/2_1_ja.png[]
+
+2.続いてプロジェクト作成画面になります～ +
+プロジェクト名を入力し、 +
+赤枠の設定をしたら[CREATE PROJECT]を押しましょ～ +
+**[red]#※初回作成時の画像を取り忘れたため、 +
+  　以降「hello-world」のプロジェクトと差し替えて説明しています～
+  　ご了承下さい～#** +
+
+image::cacapon/001/3.png[]
+
+3.右下のConversationalを選択をします～
+
+image::cacapon/001/4.png[]
+
+4.左のメニューのInvocationを選択して、 +
+  Display nameを入力したあと、[SAVE]ボタンを押します～ +
+  ※メニューが隠れている場合は≡マークを選択すると現れます～ +
+
+image::cacapon/001/5.png[]
+
+5.次に左メニューから[Build]->[Actions]を選択して、 +
+  [ADD YOUR FIRST ACTION]ボタンを押します～
+
+image::cacapon/001/7.png[]
+
+6.Custum intentになっているのを確認し、 +
+  [BUILD]を押しましょう～
+
+image::cacapon/001/8.png[]
+
+## =Dialogflowの初期設定=
+7.初回だとDialogflowからGoogleアカウントへの +
+  アクセスが求められるので、許可します～
+
+image::cacapon/001/9.png[]
+
+8.次に初期設定画面が表示されます～
+
+image::cacapon/001/10.png[]
+
+* 翻訳すると下記になりますので、 +
+国の設定と利用規約にチェックを入れ、 +
+ACCEPT(翻訳後だと受け入れる)ボタンを押しましょう～
+
+image::cacapon/001/10_ja.png[]
+
+9.時間経過のせいかもう一度同じ画面が出ました～ +
+  許可して先に進みます～
+
+====
+※　通常時は二回も出るかはわかりません～
+====
+
+//WARNING: 通常時は二回も出るかはわかりません～
+
+image::cacapon/001/11.png[]
+
+10.Dialogflowのプロジェクト開始時の画面になります～ +
+  japaneseに設定しましょう～
+
+image::cacapon/001/12.png[]
+
+## <アプリケーションを作成していく>
+ここから、道具屋のアプリケーションを作成して行きます～ +
+まずはDialogflowの設定を見てきましょう～
+
+## Dialogflow編
+**<Entitiesを開き、Entitieを作成していく>** +
+
+* Entitieは、会話に含まれる特定の単語を +
+  変数として扱うことができる機能です～ +
+  作成するEntitieは下記の通りです～
+  ** exit_of_in_the_middle(途中退出感知用)
+  ** ItemList(道具屋のアイテムを扱う値)
+  ** YES(はいを判定する値)
+  ** NO(いいえ判定の値)
+  ** Pieces(何個購入するかを保持する)
+
+* 新規で作成する場合は、[CREATE ENTITY]を押すと作成します～
+
+image::cacapon/001/13_re.png[]
+
+* こちらの図は、ItemListを開いた時の図です～
+* 左は値、右がどの単語が値として扱われるかを記載していきます。 +
+ [blue]#例：左が薬草、右が薬草・やくそうの場合、
+「やくそうください」と話しかけたら「やくそう」という単語から「薬草」が含まれていると判断します～ +
+「薬草」ももちろん同じ♪ +
+でも、「ヤクソウ」は左にないため「薬草」と判断されません。# 
+
+image::cacapon/001/14_re.png[]
+
+ItemList以外のEntitieは下記のように設定しました。
+
+image::cacapon/001/14_1.png[]
+
+image::cacapon/001/14_2.png[]
+
+image::cacapon/001/14_3.png[]
+
+* 数字を扱う場合は [red]#**@sys.number:number**# を使います～
+
+image::cacapon/001/14_4.png[]
+
+
+
+**<Intentsを作成する>** +
+Intentはあるトリガーをきっかけに呼ばれるイベントといえばよいでしょうか？ +
+例えば、「令」と言ったら「和」と返す… +
+「何の言葉」に「どう返すか」を設定するのがIntentになります～
+
+* 今回のアプリケーションでは下記Intentを設定しました。 +
+  ** Default Fallback Intent　(聞き取りミスの時～)
+  ** Default Welcome Intent　(起動する時～)
+  ** MAIN　(上記以外のもろもろの対応はこちら～)
+  ** end　(退出が必要な場合はこちらが呼ばれます～)
+
+image::cacapon/001/15.png[]
+
+なお、Intentsを作成してから必要な値が分かる時もありますので、 +
+作成した時はEntityの作成と行き来する事もありました～
+
+次に、Intentsの各項目を紹介します～ +
+下記図はMAINを開いた時の図がこちら。
+
+image::cacapon/001/15_1.png[]
+* Contexts +
+  yes/no分岐を作るときに使用。 +
+  [red]#今回はpython側でフローを管理するので使いません～#
+
+* Events +
+  イベントを呼び出すときに使います～ +
+  終了処理を書く時には設定しますが、 +
+  [red]#MAINでは設定しません～#
+
+* Training phrases +
+  Intentsが呼ばれる会話を設定します～ +
+
+* Action and parameters +
+  Entityを設定していると該当単語が現れた際に +
+  自動的に値が設定されます～ +
+  [red]#手動ではいじってません～#
+
+* Responses +
+  MAINが呼ばれた際に、何とメッセージを返すか設定します♪ +
+  webhook(後述)を使わない場合はここを設定する必要がありますが、 +
+  [red]#今回はメッセージをpythonが返すため設定してません～#
+
+* Fulfillment +
+  そのIntentsがwebhookを利用するかしないか設定します～
+
+それでは各項目を見ていきましょう～ +
+下図はMAINのTraining phrasesです～
+
+image::cacapon/001/15_2.png[]
+
+Add user expressionに記載し、Enterすると、 +
+  Training phrasesが追加されます～ +
+  その時、Entitieを設定していますと、 +
+  図のように色分けされるようになるのです♪ +
+  色分けされたところがEntitieと対応するようになります～ +
+  ここに入力されたフレーズで判断していきますので、 +
+  考えられるフレーズをどんどん入力していきましょう～ +
+
+
+次に、下図はAction on　parametersである。
+
+image::cacapon/001/15_3.png[]
+
+Training phrasesにEntitieが含まれている場合、 +
+  自動的に設定されます～
+
+次の下図は、MainのFulfillmentになります～
+
+image::cacapon/001/15_4.png[]
+
+[Enable webhook call for this intent]を有効にすると、 +
+  そのIntentがwebhookを通して +
+  json形式で外部アプリとやり取りすることができます～ +
+  MAINはjsonでやり取りしますので、有効にしましょう～
+
+---
+
+こんな感じで設定していきます～ +
+他の項目も見ていきましょう～
+
+### Default fallback intent の場合
+image::cacapon/001/16_1.png[]
+
+pythonからjsonデータを受け取るため +
+Fullfilmentを有効にする必要があります～ +
+それ以外は未入力でOKです～
+
+### Default welcome intent の場合
+
+image::cacapon/001/16_2_A.png[]
+
+image::cacapon/001/16_2_B.png[]
+
+image::cacapon/001/16_2_C.png[]
+
+* Events Action and parametersは自動で設定されます。
+* Training phrasesは無くても大丈夫ですが、 +
+  Dialogflowからテスト確認したいときに設定していると便利です～ +
+  今回は「道具屋」というワードを設定しています～
+* Responsesにもテスト用に入れておきましょう～ +
+  jsonファイルが返されなかったときはこちらが呼ばれますので、 +
+  エラーチェック用に設定しましょう～
+
+====
+※ 「デフォルト」は適していないかも？ +
+　「JSONが返されませんでした」の方が分かりやすいかもです。
+====
+// TIP: 「デフォルト」は適していないかも？ +
+//「JSONが返されませんでした」の方が分かりやすいかもです。
+
+* こちらもjsonデータのやり取りが発生するので、 +
+  fulfillmentは有効にしましょう～
+
+### end の場合
+
+image::cacapon/001/17_A.png[]
+
+image::cacapon/001/17_B.png[]
+
+* Eventsには [red]#actions_intent_CANCEL# を設定します。
+
+====
+※[red]#actions_intent_CANCEL# はAction on Googleへ +
+　終了を伝えるためのイベントになります～
+====
+
+//TIP: [red]#actions_intent_CANCEL# はAction on Googleへ +
+//    終了を伝えるためのイベントになります～
+
+* Responseのワードは設定しませんが、 +
+  Set this intent as end of conversation を有効にします～ +
+  これは、このintentが来たら終わりですよ～というのを +
+  伝えるためのものになります～
+
+* こちらも他のintent同様jsonデータのやり取りがあるので、 +
+  fulfillmentは有効に～
+
+ここまで出来れば、Dialogflowで設定する項目は一旦一休みになります～ +
+この後は、pythonでの実装部分に取り掛かりましょう～
+
+## python編
+
+さて、pythonでの実装についてですが、 +
+主に行いたいのは下記のことになります～
+
+. Dialogflowからjsonデータを受け取る事
+. 受け取ったjsonデータからどのユーザーか判断すること
+. 会話のフローを管理すること
+. 利用中のユーザーがどの会話のフローか判断して、 +
+  道具屋が返すべきメッセージを選択すること
+. 選択したメッセージをjson形式でDialogflowへ渡すこと
+
+また、アプリ審査を通すために、 +
+プライバシーポリシーの作成も必要になりますので、 +
+プライバシーポリシーもpythonで作っていきましょう～
+
+以上を踏まえて、大まかな設計は下記のようにしていきます～ +
+flaskとmvcモデルを組み合わせた形ですね～
+
+image::cacapon/001/shop_dataflow.png[]
+
+
+それでは、実装内容を見ていきましょう～
+
+…と言いたいところですが、コードが長すぎるので +
+各コードがどんな役割かを中心に紹介したいと思います～
+
+### 全体の階層構造
+[source, python]
+----
+|--.gitignore ※1
+|--Procfile
+|--requirements.txt
+|
+|--www
+|  |--app.py
+|  |--factory_app.py
+|  |--setting.py
+|  |
+|  |--controllers
+|  |  |--__init__.py
+|  |  |--posts.py
+|  |
+|  |--instance
+|  |  |--sample_application.cfg※2
+|  |
+|  |--model_instance
+|  |  |--__init__.py
+|  |  |--i_flow_maneger.py
+|  |  |--i_flow_status.py
+|  |  |--i_output_data_adjust.py
+|  |  |--i_Select_next_status.py
+|  |  |--i_Select_ret_mes.py
+|  |
+|  |--models
+|  |  |--__init__.py
+|  |  |--flow_maneger.py
+|  |  |--flow_status.py
+|  |  |--output_data_adjust.py
+|  |  |--Select_next_status.py
+|  |  |--Select_ret_mes.py
+|  |
+|  |--templates
+|  |  |--posts
+|  |  |  |--privacy-policy.html
+|  |
+|  |--views
+|  |  |--__init__.py
+|  |  |--posts.py
+|
+|--test
+|  |--conftest.py ※1
+|  |--flasktest
+|  |  |--test_app.py ※1
+|  |--modeltest
+|  |  |--tes_data.json
+|  |  |--test_flow_maneger.py
+|  |  |--test_flow_status.py
+|  |  |--test_output_data_adjust.py
+|  |  |--test_select_next_status.py
+|  |  |--test_select_ret_mes.py
+
+※1:社内用プライベートリポジトリ[flask-mvc]から流用してます～
+※2:流用したものが残ってました～　今回使いません～
+----
+---
+### rootディレクトリのファイル
+----
+|--.gitignore
+|--Procfile
+|--requirements.txt
+----
+
+.gitignore +
+・gitにプッシュしないファイルやフォルダを書きます～
+
+.Procfile +
+・herokuにプッシュ(後述)する際に実行される + 
+　コマンドを記載します～ +
+　ここを設定していないと、 +
+　後でプッシュした時にエラーになるので設定しましょう～
+
+↓中身
+
+----
+web: cd www &&  gunicorn app:app --log-file -
+----
+
+.requirements.txt +
+実装に使ったパッケージを記載していきます～ +
+今回使ったのは +
+**Flask・pytest・gunicorn**の三つです。 +
+バージョンはpip freezeで確認しておきましょう～
+
+
+---
+
+### wwwのファイル
+
+----
+www
+|--app.py
+|--factory_app.py
+|--setting.py
+----
+
+image::cacapon/001/shop_dataflow.png[]
+
+
+上図でいうflaskにあたる部分です～
+
+.app.py
+flaskを立ち上げます～
+
+.factory_app.py
+flaskの設定やcontrollerの情報を読み込んで +
+flaskのインスタンスを生成します～
+
+.setting.py
+各モード(testやdev,prodなど)毎に設定します～
+
+---
+
+### www/controllersのファイル
+
+----
+controllers
+|--__init__.py
+|--posts.py
+----
+
+設定したURLにアクセスしたとき、どのviewに飛ばすかを設定します～ +
+今回はmodelとプライバシーポリシーへ送る指示を作ります～
+
+---
+### www/viewsのファイル
+
+----
+views
+|--__init__.py
+|--posts.py
+----
+
+
+本アプリのviewsではプライバシーポリシーのページ呼び出しと、 +
+models内のクラスを呼び出す設定を行っています～
+
+---
+### www/templatesのファイル
+
+----
+templates
+|--posts
+|  |--privacy-policy.html
+----
+
+Googleのアプリにはプライバシーポリシーが必要です。 +
+そのhtmlファイルをこちらで作ります～
+
+ただし、作成時は以下に注意してください～
+
+**[blue]#１アプリケーション名を入れること +
+２個人情報の扱いを記載すること +
+３アナリティクスを使うならそのあたりを記載すること#**
+
+このあたりを守れていればおそらく大丈夫かと思います～
+
+---
+### www/modelsのファイル
+### www/model_instanceのファイル
+
+----
+models
+|--__init__.py
+|--flow_maneger.py
+|--flow_status.py
+|--output_data_adjust.py
+|--Select_next_status.py
+|--Select_ret_mes.py
+
+model_instance
+|--__init__.py
+|--i_flow_maneger.py
+|--i_flow_status.py
+|--i_output_data_adjust.py
+|--i_Select_next_status.py
+|--i_Select_ret_mes.py
+----
+
+今回の実装ではインスタンスを生成する部分と +
+クラス部分を分けて実装しました～
+
+やりたいことは受け取った会話から +
+それに合った返事を返す。ということをしています～
+
+.Select_ret_mes.py +
+大元のプログラムですね～ +
+受け取った会話から、適した返事を返すということをしています～
+
+.flow_maneger.py +
+会話フローの管理をしています～ +
+・そのユーザーは今どこのフローか返したり
+・そのユーザーの次のフローを設定したりしています～
+
+.flow_status.py +
+今のフローだとどの会話を受け取った時、 +
+どんなフローになってどんな会話を返すか… +
+そんなデータ一覧を管理しているのがflow_status.pyです～
+
+.Select_next_status.py +
+flow_status.pyの会話フローの一覧と +
+受け取った会話データを使って、 +
+次のフローが何かを決めるプログラムです～
+
+.output_data_adjust.py +
+Dialogflowに会話データを返すとき、 +
+
+通常時は
+
+----
+{
+    "fulfillmentText": "何かしらのメッセージ",
+    "source": "何かしらのメッセージ"
+}
+----
+
+会話を終わらせるときは
+
+----
+{
+	"payload": {
+		"google": {
+			"expectUserResponse": False,
+			"richResponse": {
+				"items": [
+					{
+						"simpleResponse": {
+							"textToSpeech": "何かしらのメッセージ"
+						}
+					}
+				]
+			}
+		}
+	}
+}
+----
+
+という形式にしないといけません～ +
+その形に整形するのがこちらのプログラムになります～
+
+...
+
+因みに、model_instance内のプログラムは +
+各クラスのインスタンスを生成するプログラムになります～
+
+---
+### testのファイル
+
+----
+test
+|--conftest.py
+|--flasktest
+|  |--test_app.py
+|--modeltest
+|  |--tes_data.json
+|  |--test_flow_maneger.py
+|  |--test_flow_status.py
+|  |--test_output_data_adjust.py
+|  |--test_select_next_status.py
+|  |--test_select_ret_mes.py
+
+----
+
+pytestで実行できるテストコードになります～
+
+ルートディレクトリでpytestと打つとテストしてくれます～
+
+ただ…
+テストコードを作っていない箇所、 +
+テストコードが完成していない箇所があります～
+
+これはcacaponの開発の仕方のミスです～ +
+途中までテストコード作っておらず +
+不完全なテストコードになってしまいました～
+
+---
+と、ここまででpythonの実装は以上になります～ +
+次は、作ったコードで動作確認をしてみましょう～
+
+## 動作確認編
+
+### Dialogflowを使って確認してみる
+
+動作確認を行うためには、Dialogflowとflaskを接続する必要があります～ +
+今回の接続方法は、webhookを使ったやり方で行うのですが、 +
+その時に必要になるのが、https形式のurlです～
+
+本番だとherokuにデプロイし、そこで発行されるurlを使うのですが、 +
+ちょっとした修正だとherokuへデプロイはちょっとめんどくさい…
+
+そんな時に使うのが、ngrokです～
+
+ngrokというのは、ローカルホストのURLを一時的にhttpやhttpsとして扱えるツールで、 +
+一時的な確認でしたら、ngrokで作成したhttpsのurlを使って行うことができるのです～
+
+というわけで設定していきましょう～
+
+まずはこちらでアカウント登録、 +
+及び設定をお願いします～
+(英語で書かれていますが、分かりやすいと思います～)
+
+https://ngrok.com/[ngrokの公式ページ]
+
+設定が終わりましたら、ngrokを起動してみましょう～
+
+image::cacapon/001/24.png[]
+
+CLIな画面が出てくると思いますので、 +
+ngrok http 5000 とコマンドを打ち、Enterしましょう～
+
+そうすると下のような画面が出ると思います～
+
+image::cacapon/001/25.png[]
+
+そしたら、Forwardingというところにhttpsのurlが出ますので、 +
+図のように選択してコピーしましょう～
+
+次に、DialogflowのFullfilmentに設定します～ +
+写真のようにWebhookのEnabledを有効にし、 +
+先ほどコピーしたurlを貼り付けましょう～
+
+なお、今回のアプリではcallbackにアクセスしたら +
+modelが呼ばれるようになってますので、 +
+"https://<ngrokのurl>/callback" +
+という形式になります～
+
+image::cacapon/001/27.png[]
+
+設定が終わったら保存して、app.pyを立ち上げましょう～
+
+カレントディレクトリから +
+  python www/app.py を実行します～ +
+
+image::cacapon/001/23.png[]
+
+これで確認する準備が整いました！ +
+さっそくDialogflowを使って確認してみましょう～
+
+右上にあるTry it now　に入力してみてください～
+
+image::cacapon/001/31.png[]
+
+こちらの写真はお試しで作ったHelloworldのものになりますが、 +
+おはようございます　と入力したら、 +
+Welcome to Flask. Hello World! +
+と返っているのがわかるかと思います～
+
+こんな感じで、返事が正しく返ってきてるか確認してみて下さい～
+
+より詳しい情報を見たいときは +
+DIAGNOSTIC INFOを確認するとjsonの内容が見れます～
+
+---
+
+### Action on Googleを使って確認してみる
+
+Dialogflowの確認が大丈夫そうでしたら、 +
+実際の環境に近い、Action on Googleの +
+シミュレータを使って確認しましょう～
+
+まずは、DialogflowのIntegrationsを開いて、 +
+Google Assistantを押します～
+
+image::cacapon/001/17.png[]
+
+下の方にあるTESTを押しましょう～
+
+image::cacapon/001/18.png[]
+
+CONTINUEを押します～
+
+image::cacapon/001/19.png[]
+
+しばらく待つと、シミュレータの画面に移動します～
+
+image::cacapon/001/21.png[]
+
+====
+※ 下の画面が出た場合、Action on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
+　違ってなかったとしても、デフォルトのアカウントが違うという場合もありますので、そのあたりを確認してみてください～
+====
+//WARNING: 下の画面が出た場合、Action on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
+//違ってなかったとしても、デフォルトのアカウントが違うという場合もありますので、そのあたりを確認してみてください～
+
+image::cacapon/001/20_error.png[]
+
+では、動かしてみましょう～ +
+メッセージを入れてどう動くか、 +
+アプリがどうしゃべるか確認していきます。
+
+image::cacapon/001/22.png[]
+
+もし、応答がないと言われましたら、次の事を確認してください～ +
+・app.pyがちゃんと起動しているか？ +
+・python側で何かエラーが起きてないか？ +
+
+ここまでの確認で問題がない！ +
+後は、リリースするだけ！ +
+となりましたら、アプリリリースの作業に入りましょう～
+
+## アプリリリース作業
+
+### herokuにデプロイする。
+確認作業ではngrokを使用していましたが、 +
+ngrokはあくまで「一時的」に確認するものですので、 +
+本番には向いていません。
+
+そこで、恒久的に動作する環境を用意するため、 +
+herokuを使っていきたいと思います～
+
+インストールに関してはこちらを参考にしています～
+
+https://devcenter.heroku.com/articles/getting-started-with-python#set-up[herokuのインストール手順]
+
+インストールできましたら、cliを立ち上げて進めていきましょう～
+
+まずは、heroku login +
+logeed in as <登録したメールアドレス> がでたらOKです～
+
+image::cacapon/001/28.png[]
+
+次に、heroku create app名 でherokuのアプリを作成します。 +
+(今回は写真用に、test-rpg-shopという名前で作成しています)
+
+image::cacapon/001/29.png[]
+
+そして、git push heroku master でアプリにソースコードをプッシュします。
+
+====
+※ ビルドがうまくいかない場合は、 +
+herokuのビルドパックが設定されていないのかもしれません。 +
+ビルドパックの変更については以下ページがわかりやすいです～ +
+　　 http://info-i.net/heroku-buildpacks
+====
+
+//WARNING: ビルドがうまくいかない場合は、 +
+//herokuのビルドパックが設定されていないのかもしれません。 +
+//ビルドパックの変更については以下ウェブページがわかりやすいです～ +
+//http://info-i.net/heroku-buildpacks
+
+プッシュが正常に完了したら、DialogflowのwebhookのURLを +
+herokuのURL/callback に変更して動かしてみましょう～
+
+これで正常に返事が返ってくるようでしたら +
+herokuの環境はできたといってよいでしょう。
+
+====
+※上手くいかなかったら、 +
+　CLI上で heroku logs -t を打ち、 +
+　herokuのログを確認してみてください～ +
+　何かしらの解決のためのヒントが出ているはずです～
+====
+
+//TIP:上手くいかなかったら、 +
+//CLI上で heroku logs -t を打ち、 +
+//herokuのログを確認してみてください～ +
+//何かしらの解決のためのヒントが出ているはずです～
+
+### Action on Googleにアプリの情報を記載していく。
+
+herokuの環境ができましたら、いよいよ最後の行程、 +
+リリースに必要な情報を記載していきましょう～
+
+
+#### Description
+
+Action on GoogleのDirectory informationを開き +
+Descriptionを開いてみましょう～
+
+
+image::cacapon/001/37.png[]
+
+ここは、アプリの説明を記載します～ +
+short の方は概要を +
+Full の方は詳細を書いていく感じですね～
+
+次は、Sample invocationsです。 +
+こちらは、どんなワードでアプリが呼び出されるか設定します～
+
+続いて、Imagesですね～
+
+image::cacapon/001/38.png[]
+
+こちらはアプリのページで使われるアイコンと画像を設定します～ +
+画像は任意ですが、アイコンは必須なので合ったアイコンを設定しましょう～
+
+Contact detailsは表示するアプリ作成者を記載します～
+
+image::cacapon/001/39.png[]
+
+Privacy and consentにはプライバシーポリシーのurlを記載します。 +
+今回だと、https://amazingengine-rpg-shop.herokuapp.com/privacy-policy +
+というURLを設定しています～
+
+一番下にある、Additional Information には下記のように設定しました。
+Category:Games & fun +
+For Families:No +
+Alcohol and Tobacco:No +
+Testing Instructions (optional) +
+薬草を2個ください +
+はい +
+いいえ +
+残りはすべてチェック無
+
+image::cacapon/001/42.png[]
+
+image::cacapon/001/43.png[]
+
+#### Location targeting
+
+続いて、Location targetingを開きます～
+
+こちらはどこの国をターゲットにするかを設定するところですね～
+
+今回は214ヵ国を対象にしています～
+
+image::cacapon/001/44.png[]
+
+#### Surface capabilities
+
+Surface capabilitiesでは、必要なデバイス機能を設定していきます～
+
+今回はスピーカーアプリなので、Do your Actions require audio output?のみyesにします～
+
+image::cacapon/001/45.png[]
+
+---
+
+ここまで設定したら、あと一歩です！
+リリース申請をしましょう～
+
+Releaseを選択して、SUBMIT FOR PRODUCTION　を押します。 +
+Googleさんが審査してくれますので、通るまで待ちましょう～
+
+通らなかった場合も、メールでどこがダメだったか教えてくれるので、 +
+通らなかった原因を直して申請…というのを繰り返して +
+審査を通しましょう～
+
+これで通りましたら、晴れてRPGの道具屋がリリースされたことになります！
+Googlehomeに「RPGの道具屋につないで」っていえば、 +
+cacaponの作ったRPGの道具屋を遊ぶことができますよ～♪
+
+====
+※もし、Googlehomeを持っていない…という方も、 +
+　スマフォアプリでGoogleAssissantをインストールして、 +
+　「RPGの道具屋につないで」って言えば遊べますよ～
+====
+
+
+//TIP: もし、Googlehomeを持っていない…という方も、 +
+//スマフォアプリでGoogleAssissantをインストールして、 +
+//「RPGの道具屋につないで」って言えば遊べますよ～
+
+## <終わりに>
+
+ここまでお疲れさまでした！ +
+
+今回のブログを見て +
+「アプリ作ってみたいけど、ちょっと難しそうだな…」と思っていた方が +
+「お！意外と簡単じゃん！」って思ってくれたら嬉しいなぁとも思っています～♪
+
+
+私がここまで出来たのはAmazing engineの皆さまがフォローしてくれたおかげだと思います！ +
+本当にありがとうございました～
+
+そんな弊社の募集がありますので、最後ですがご覧ください♪
+
+---
+
+Amazing engineでは、代表の「必要なものを先に作ろう」という考えのもと、 +
+botやシステムなどを皆で考えながら、より良い会社にして言っている最中です！
+
+私は働き始めてまだ間もないのですが、そのための時間はしっかりあり、 +
+手厚いフォローもあってとても充実した仕事を送れています！ +
+ここでしたら、いずれ私がやりたいゲーム作りもできるなぁという実感を持っています！ +
+
+そんな弊社ですが、只今社員募集中です！ +
+よかったら一緒にAmazing engineで働いてみませんか？ +
+
+私たちと一緒に会社を大きくしたい！ +
+じっくり考える環境で企画・設計・実装したい！ +
+
+そんな貴方と一緒に働けることを、心よりお待ちしています！ +
+
+https://jp.indeed.com/viewjob?jk=78ba877be776c77f[Indeed エンジニア職の募集はこちら]
+
+https://jp.indeed.com/viewjob?jk=62444e04b239eb39[Indeed 企画職の募集はこちら]
+
+もし↑のリンクが終わってしまっていても大丈夫です！ +
+その際は、お手数ですが下記メールアドレスにご連絡ください！
+
+employment@amazingengine.co.jp
+
+---
+
+それでは今回のブログはここまで♪ +
+最後まで読んでくれてありがとうございました！ +
+また次のブログで会いましょ～
