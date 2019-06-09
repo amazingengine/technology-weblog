@@ -32,7 +32,7 @@ webフレームワークの**Flask**など +
 
 なんと、**[red]#二週間#** で出来てしまいました♪ +
 
-そんな「https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋]」アプリがどんなものかというと…
+そんな「 https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] 」アプリがどんなものかというと…
 
 [blue]#レトロゲームでおなじみの道具屋の店員さん♪ +
 それをGoogle Homeを使ってアイテムを買う…#
@@ -909,13 +909,13 @@ cacaponの作った https://assistant.google.com/services/a/uid/000000677a6b8a00
 
 ====
 ※もし、Google Homeを持っていない…という方も、 +
-　スマフォアプリでGoogleAssissantをインストールして、 +
+　スマフォアプリで https://assistant.google.com/intl/ja_jp/[Google Assistant] をインストールして、 +
 　「RPGの道具屋につないで」って言えば遊べますよ～
 ====
 
 
 //TIP: もし、Google Homeを持っていない…という方も、 +
-//スマフォアプリでGoogleAssissantをインストールして、 +
+//スマフォアプリで https://assistant.google.com/intl/ja_jp/[Google Assistant] をインストールして、 +
 //「RPGの道具屋につないで」って言えば遊べますよ～
 
 ## <終わりに>
