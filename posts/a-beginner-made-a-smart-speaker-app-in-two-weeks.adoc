@@ -16,9 +16,9 @@ v1.0, 2019-06-05 18:30
 「 https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] 」について書いていきたいと思います♪
 
 今回アプリは、 +
-リリースに必要な**Action on google**から始まり、 +
+リリースに必要な**Actions on Google**から始まり、 +
 自然言語処理を行う**Dialogflow**、 +
-webフレームワークの**flask**など +
+webフレームワークの**Flask**など +
 など、色々なツールを組み合わせて作成しました！
 
 といっても、cacaponはそれらのツールは使ったことはありませんし、 +
@@ -32,10 +32,10 @@ webフレームワークの**flask**など +
 
 なんと、**[red]#二週間#** で出来てしまいました♪ +
 
-そんな「RPGの道具屋」アプリがどんなものかというと…
+そんな「https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋]」アプリがどんなものかというと…
 
 [blue]#レトロゲームでおなじみの道具屋の店員さん♪ +
-それをGoogle homeを使ってアイテムを買う…#
+それをGoogle Homeを使ってアイテムを買う…#
 
 という流れを再現してみてます♪
 
@@ -56,24 +56,24 @@ https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋]
 少し長くなるかと思いますが、お付き合いいただけると嬉しいです♪
 
 ## <必要なもの>
-google アカウント　(Action on GoogleとDialogflowで使います～) +
-heroku アカウント　(本アプリはheroku環境で動作させています～) +
-nglok　(デプロイ前の動作確認で使います～) +
-git (本ブログ内ではあまり触れていませんが、ソースコードのバージョン管理で利用しました～) +
-プログラミングの知識　(本アプリではpythonを使います～)
+Google アカウント　(Actions on GoogleとDialogflowで使います～) +
+Heroku アカウント　(本アプリはHeroku環境で動作させています～) +
+ngrok　(デプロイ前の動作確認で使います～) +
+Git (本ブログ内ではあまり触れていませんが、ソースコードのバージョン管理で利用しました～) +
+プログラミングの知識　(本アプリではPythonを使います～)
 
 
 ## <使用するアプリの準備>
-今回主に使っていく、Action on Googleと +
+今回主に使っていく、Actions on Googleと +
 Dialogflowの準備の仕方を説明していきます～
 
-## =Action on Googleでプロジェクトを作る= +
+## =Actions on Googleでプロジェクトを作る= +
 
-最初にGoogle home を動かすアプリのプロジェクトを作ってみましょう～ +
-https://developers.google.com/actions/?hl=ja[Action on google] のページに行き、 +
+最初にGoogle Home を動かすアプリのプロジェクトを作ってみましょう～ +
+https://developers.google.com/actions/?hl=ja[Actions on Google] のページに行き、 +
 
 右上あたりにこんなボタンがあるので押してください～ +
-(googleのアカウントが必要になりますので、作っておいてください～)
+(Googleのアカウントが必要になりますので、作っておいてください～)
 
 image::cacapon/001/0.png[]
 
@@ -217,7 +217,7 @@ image::cacapon/001/15.png[]
 image::cacapon/001/15_1.png[]
 * Contexts +
   yes/no分岐を作るときに使用。 +
-  [red]#今回はpython側でフローを管理するので使いません～#
+  [red]#今回はPython側でフローを管理するので使いません～#
 
 * Events +
   イベントを呼び出すときに使います～ +
@@ -235,7 +235,7 @@ image::cacapon/001/15_1.png[]
 * Responses +
   MAINが呼ばれた際に、何とメッセージを返すか設定します♪ +
   webhook(後述)を使わない場合はここを設定する必要がありますが、 +
-  [red]#今回はメッセージをpythonが返すため設定してません～#
+  [red]#今回はメッセージをPythonが返すため設定してません～#
 
 * Fulfillment +
   そのIntentsがwebhookを利用するかしないか設定します～
@@ -278,7 +278,7 @@ image::cacapon/001/15_4.png[]
 ### Default fallback intent の場合
 image::cacapon/001/16_1.png[]
 
-pythonからjsonデータを受け取るため +
+Pythonからjsonデータを受け取るため +
 Fullfilmentを有効にする必要があります～ +
 それ以外は未入力でOKです～
 
@@ -317,11 +317,11 @@ image::cacapon/001/17_B.png[]
 * Eventsには [red]#actions_intent_CANCEL# を設定します。
 
 ====
-※[red]#actions_intent_CANCEL# はAction on Googleへ +
+※[red]#actions_intent_CANCEL# はActions on Googleへ +
 　終了を伝えるためのイベントになります～
 ====
 
-//TIP: [red]#actions_intent_CANCEL# はAction on Googleへ +
+//TIP: [red]#actions_intent_CANCEL# はActions on Googleへ +
 //    終了を伝えるためのイベントになります～
 
 * Responseのワードは設定しませんが、 +
@@ -333,11 +333,11 @@ image::cacapon/001/17_B.png[]
   fulfillmentは有効に～
 
 ここまで出来れば、Dialogflowで設定する項目は一旦一休みになります～ +
-この後は、pythonでの実装部分に取り掛かりましょう～
+この後は、Pythonでの実装部分に取り掛かりましょう～
 
-## python編
+## Python編
 
-さて、pythonでの実装についてですが、 +
+さて、Pythonでの実装についてですが、 +
 主に行いたいのは下記のことになります～
 
 . Dialogflowからjsonデータを受け取る事
@@ -349,10 +349,10 @@ image::cacapon/001/17_B.png[]
 
 また、アプリ審査を通すために、 +
 プライバシーポリシーの作成も必要になりますので、 +
-プライバシーポリシーもpythonで作っていきましょう～
+プライバシーポリシーもPythonで作っていきましょう～
 
 以上を踏まえて、大まかな設計は下記のようにしていきます～ +
-flaskとmvcモデルを組み合わせた形ですね～
+Flaskとmvcモデルを組み合わせた形ですね～
 
 image::cacapon/001/shop_dataflow.png[]
 
@@ -429,10 +429,10 @@ image::cacapon/001/shop_dataflow.png[]
 ----
 
 .gitignore +
-・gitにプッシュしないファイルやフォルダを書きます～
+・Gitにプッシュしないファイルやフォルダを書きます～
 
 .Procfile +
-・herokuにプッシュ(後述)する際に実行される + 
+・Herokuにプッシュ(後述)する際に実行される + 
 　コマンドを記載します～ +
 　ここを設定していないと、 +
 　後でプッシュした時にエラーになるので設定しましょう～
@@ -446,7 +446,7 @@ web: cd www &&  gunicorn app:app --log-file -
 .requirements.txt +
 実装に使ったパッケージを記載していきます～ +
 今回使ったのは +
-**Flask・pytest・gunicorn**の三つです。 +
+**Flask・pytest・Gunicorn**の三つです。 +
 バージョンはpip freezeで確認しておきましょう～
 
 
@@ -464,14 +464,14 @@ www
 image::cacapon/001/shop_dataflow.png[]
 
 
-上図でいうflaskにあたる部分です～
+上図でいうFlaskにあたる部分です～
 
 .app.py
-flaskを立ち上げます～
+Flaskを立ち上げます～
 
 .factory_app.py
-flaskの設定やcontrollerの情報を読み込んで +
-flaskのインスタンスを生成します～
+Flaskの設定やcontrollerの情報を読み込んで +
+Flaskのインスタンスを生成します～
 
 .setting.py
 各モード(testやdev,prodなど)毎に設定します～
@@ -641,19 +641,19 @@ pytestで実行できるテストコードになります～
 不完全なテストコードになってしまいました～
 
 ---
-と、ここまででpythonの実装は以上になります～ +
+と、ここまででPythonの実装は以上になります～ +
 次は、作ったコードで動作確認をしてみましょう～
 
 ## 動作確認編
 
 ### Dialogflowを使って確認してみる
 
-動作確認を行うためには、Dialogflowとflaskを接続する必要があります～ +
+動作確認を行うためには、DialogflowとFlaskを接続する必要があります～ +
 今回の接続方法は、webhookを使ったやり方で行うのですが、 +
 その時に必要になるのが、https形式のurlです～
 
-本番だとherokuにデプロイし、そこで発行されるurlを使うのですが、 +
-ちょっとした修正だとherokuへデプロイはちょっとめんどくさい…
+本番だとHerokuにデプロイし、そこで発行されるurlを使うのですが、 +
+ちょっとした修正だとHerokuへデプロイはちょっとめんどくさい…
 
 そんな時に使うのが、ngrokです～
 
@@ -719,10 +719,10 @@ DIAGNOSTIC INFOを確認するとjsonの内容が見れます～
 
 ---
 
-### Action on Googleを使って確認してみる
+### Actions on Googleを使って確認してみる
 
 Dialogflowの確認が大丈夫そうでしたら、 +
-実際の環境に近い、Action on Googleの +
+実際の環境に近い、Actions on Googleの +
 シミュレータを使って確認しましょう～
 
 まずは、DialogflowのIntegrationsを開いて、 +
@@ -743,10 +743,10 @@ image::cacapon/001/19.png[]
 image::cacapon/001/21.png[]
 
 ====
-※ 下の画面が出た場合、Action on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
+※ 下の画面が出た場合、Actions on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
 　違ってなかったとしても、デフォルトのアカウントが違うという場合もありますので、そのあたりを確認してみてください～
 ====
-//WARNING: 下の画面が出た場合、Action on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
+//WARNING: 下の画面が出た場合、Actions on Googleでプロジェクトを作成した時のアカウントと今のアカウントが異なる可能性があります～ +
 //違ってなかったとしても、デフォルトのアカウントが違うという場合もありますので、そのあたりを確認してみてください～
 
 image::cacapon/001/20_error.png[]
@@ -759,7 +759,7 @@ image::cacapon/001/22.png[]
 
 もし、応答がないと言われましたら、次の事を確認してください～ +
 ・app.pyがちゃんと起動しているか？ +
-・python側で何かエラーが起きてないか？ +
+・Python側で何かエラーが起きてないか？ +
 
 ここまでの確認で問題がない！ +
 後は、リリースするだけ！ +
@@ -767,17 +767,17 @@ image::cacapon/001/22.png[]
 
 ## アプリリリース作業
 
-### herokuにデプロイする。
+### Herokuにデプロイする。
 確認作業ではngrokを使用していましたが、 +
 ngrokはあくまで「一時的」に確認するものですので、 +
 本番には向いていません。
 
 そこで、恒久的に動作する環境を用意するため、 +
-herokuを使っていきたいと思います～
+Herokuを使っていきたいと思います～
 
 インストールに関してはこちらを参考にしています～
 
-https://devcenter.heroku.com/articles/getting-started-with-python#set-up[herokuのインストール手順]
+https://devcenter.heroku.com/articles/getting-started-with-python#set-up[Herokuのインストール手順]
 
 インストールできましたら、cliを立ち上げて進めていきましょう～
 
@@ -786,7 +786,7 @@ logeed in as <登録したメールアドレス> がでたらOKです～
 
 image::cacapon/001/28.png[]
 
-次に、heroku create app名 でherokuのアプリを作成します。 +
+次に、heroku create app名 でHerokuのアプリを作成します。 +
 (今回は写真用に、test-rpg-shopという名前で作成しています)
 
 image::cacapon/001/29.png[]
@@ -795,43 +795,43 @@ image::cacapon/001/29.png[]
 
 ====
 ※ ビルドがうまくいかない場合は、 +
-herokuのビルドパックが設定されていないのかもしれません。 +
+Herokuのビルドパックが設定されていないのかもしれません。 +
 ビルドパックの変更については以下ページがわかりやすいです～ +
 　　 http://info-i.net/heroku-buildpacks
 ====
 
 //WARNING: ビルドがうまくいかない場合は、 +
-//herokuのビルドパックが設定されていないのかもしれません。 +
+//Herokuのビルドパックが設定されていないのかもしれません。 +
 //ビルドパックの変更については以下ウェブページがわかりやすいです～ +
 //http://info-i.net/heroku-buildpacks
 
 プッシュが正常に完了したら、DialogflowのwebhookのURLを +
-herokuのURL/callback に変更して動かしてみましょう～
+HerokuのURL/callback に変更して動かしてみましょう～
 
 これで正常に返事が返ってくるようでしたら +
-herokuの環境はできたといってよいでしょう。
+Herokuの環境はできたといってよいでしょう。
 
 ====
 ※上手くいかなかったら、 +
 　CLI上で heroku logs -t を打ち、 +
-　herokuのログを確認してみてください～ +
+　Herokuのログを確認してみてください～ +
 　何かしらの解決のためのヒントが出ているはずです～
 ====
 
 //TIP:上手くいかなかったら、 +
 //CLI上で heroku logs -t を打ち、 +
-//herokuのログを確認してみてください～ +
+//Herokuのログを確認してみてください～ +
 //何かしらの解決のためのヒントが出ているはずです～
 
-### Action on Googleにアプリの情報を記載していく。
+### Actions on Googleにアプリの情報を記載していく。
 
-herokuの環境ができましたら、いよいよ最後の行程、 +
+Herokuの環境ができましたら、いよいよ最後の行程、 +
 リリースに必要な情報を記載していきましょう～
 
 
 #### Description
 
-Action on GoogleのDirectory informationを開き +
+Actions on GoogleのDirectory informationを開き +
 Descriptionを開いてみましょう～
 
 
@@ -903,18 +903,18 @@ Googleさんが審査してくれますので、通るまで待ちましょう�
 通らなかった原因を直して申請…というのを繰り返して +
 審査を通しましょう～
 
-これで通りましたら、晴れてRPGの道具屋がリリースされたことになります！
-Googlehomeに「RPGの道具屋につないで」っていえば、 +
-cacaponの作ったRPGの道具屋を遊ぶことができますよ～♪
+これで通りましたら、晴れて https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] がリリースされたことになります！
+Google Homeに「RPGの道具屋につないで」っていえば、 +
+cacaponの作った https://assistant.google.com/services/a/uid/000000677a6b8a00[RPGの道具屋] を遊ぶことができますよ～♪
 
 ====
-※もし、Googlehomeを持っていない…という方も、 +
+※もし、Google Homeを持っていない…という方も、 +
 　スマフォアプリでGoogleAssissantをインストールして、 +
 　「RPGの道具屋につないで」って言えば遊べますよ～
 ====
 
 
-//TIP: もし、Googlehomeを持っていない…という方も、 +
+//TIP: もし、Google Homeを持っていない…という方も、 +
 //スマフォアプリでGoogleAssissantをインストールして、 +
 //「RPGの道具屋につないで」って言えば遊べますよ～
 
