@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  aeblog:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+      
