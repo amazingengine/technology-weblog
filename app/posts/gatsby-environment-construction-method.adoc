@@ -151,4 +151,4 @@ image::Gatsbyの環境構築方法/Hello-world.png[]
 今回は``Hello world!``を表示するだけのページでしたが、Gatsby公式サイトではその他にもテンプレートが公開されています。
 https://www.gatsbyjs.org/starters/?v=2[Gatsby Starter Linbrary]から探してみてください。
 
-次回はGatsbyとAsciidocを使った環境構築を行いたいと思います。
+次回はGatsbyで簡易的なブログを作りたいと思います。
