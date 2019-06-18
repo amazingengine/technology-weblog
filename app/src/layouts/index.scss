@@ -22,7 +22,6 @@ header {
 
   .card-image {
 
-
     img {
       position: absolute;
       top: 50%;
@@ -40,7 +39,10 @@ header {
       margin: 64px 0px 16px 0px;
     }
     img {
-      margin: 32px 0px 16px 0px;
+      display: block;
+      max-width: 80%;
+      padding: 16px 0px;
+      margin: 0 auto;
     }
     p {
       margin: 0px 0px 10px 0px;

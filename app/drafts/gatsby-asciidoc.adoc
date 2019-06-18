@@ -1,0 +1,27 @@
+= はじめに
+当社ではAsciidocを採用していますが、万人にはオススメしません。
+Asciidocはマイナーであり、Gatsby公式が提供している多様なプラグインを利用できない場合があるからです。
+
+例えばBlur(ぼかし)機能を提供する``gatsby-images``というプラグイン。これはAsciidocでは利用できません。また、Netlify-CMSなどの多くのサービスはAsciidocをサポートしていません。
+
+しかし、Markdownはデファクトスタンダードであり、ほぼすべての機能・サービスを利用することができます。特別な理由がない限り、Markdownを選んでください。
+
+Markdownでブログを構築する際は https://www.gatsbyjs.org/starters/gatsbyjs/gatsby-starter-blog/[Gatsby公式テンプレート]を参考にすることをおすすめします。
+
+
+= Asciidocとは
+AsciidocとはMarkdownと同じ軽量マークアップ言語です。
+
+軽量マークアップ言語をざっくりと説明すると、記述性の悪いHTMLに代わって文章を書くための言語です。軽量マークアップ言語で書かれた文章は、最終的にプログラムを用いてHTMLやXML変換されて使われます。
+
+Asciidocもこの軽量マークアップ言語の一種ですが、Markdownに比べマイナーです。しかし、Markdownよりも表現できる事が多く、HTMLだけでなく書籍に出力することにも向いています。
+
+= gatsby-transformer-asciidoc
+https://www.gatsbyjs.org/packages/gatsby-transformer-asciidoc/[gatsby-transformer-asciidoc]はGatsby公式が提供しているプラグインです。これをインストール・設定するだけで、簡単にAsciidocをHTMLへ変換できます。
+
+= gatsby-transformer-asciidocの導入
+今回はGatsby公式が提供している https://www.gatsbyjs.org/starters/gatsbyjs/gatsby-starter-blog/[gatsby-starter-blog]をベースにブログを構築します。
+
+こちらのgatsby-starter-blogはMarkdownで作成されています。こちらの各設定をAsciidoc向けに改造します。
+
+まずはGatsby公式リポジトリからgatsby-starter-blogをダウンロードします。ダウンロードにはGitを使いますので、Gitのインストールから始めましょう。
