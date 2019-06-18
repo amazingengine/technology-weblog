@@ -97,11 +97,11 @@ Gatsbyはこれらのマークダウンファイルを読み取り、``gatsby-tr
 
 続いて``mkdir sample``と入力します。これはblog内にsampleという名前のフォルダを作るコマンドです。
 
-続いて``touch sample.md``と入力します。こちらがsample.mdというファイルを生成するコマンドです。
+続いて``cd sample``、``touch index.md``と入力します。``touch index.md``はindex.mdというファイルを生成するコマンドです。
 
 これでファイルの準備はできました。では、いよいよ記事を入力します。
 
-``open sample.md``と入力することで、Markdownファイルを開きます。何らかのソフト(Xcodeなど)が起動したら、ファイルに以下をコピー・ペーストしてください。
+``open index.md``と入力することで、Markdownファイルを開きます。何らかのソフト(Xcodeなど)が起動したら、以下をコピー・ペーストしてください。
 
 ```
 ---
@@ -117,4 +117,4 @@ image::gatsby-starter-template/hello-gatsby.png[]
 http://localhost:8000[http://localhost:8000/]へアクセスしてください。sampleという記事ができたのが確認できたでしょうか。
 
 お疲れ様でした。
-
+これでGatsbyの簡易的なブログができました。
