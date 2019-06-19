@@ -89,7 +89,7 @@ http://localhost:8000[http://localhost:8000/]へアクセスしてください�
 = 記事作成
 せっかくなので記事を作成してみます。
 
-gatsby-starter-blogでは、``content``内の``post``ディレクトリに記事が置かれています。形式はマークダウンという形式で、HTMLよりも記述性や可読性が高い軽量マークアップ言語です。
+gatsby-starter-blogでは、``content``内の``blog``ディレクトリに記事が置かれています。形式はマークダウンという形式で、HTMLよりも記述性や可読性が高い軽量マークアップ言語です。
 
 Gatsbyはこれらのマークダウンファイルを読み取り、``gatsby-transformer-remark``というプラグインでHTMLに変換しています。
 
@@ -112,9 +112,13 @@ date: "2015-05-01T22:12:03.284Z"
 Hello Gatsby!
 ```
 
+続いてGatsbyを起動します。``cd ../../../``と入力し、gatsby-starter-blogディレクトリに移動します。
+
+``gatsby develop``と入力してください。Gatsbyが立ち上がりました。
+
 image::gatsby-starter-template/hello-gatsby.png[]
 
-http://localhost:8000[http://localhost:8000/]へアクセスしてください。sampleという記事ができたのが確認できたでしょうか。
+Gatsbyが処理を完了したら、http://localhost:8000[http://localhost:8000/]へアクセスしてください。sampleという記事ができたのが確認できたでしょうか。
 
 お疲れ様でした。
 これでGatsbyの簡易的なブログができました。
