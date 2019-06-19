@@ -1,5 +1,5 @@
 .DS_Store
-
 public
 .cache
 node_modules
+package-lock.json

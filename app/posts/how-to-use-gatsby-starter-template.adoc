@@ -1,0 +1,125 @@
+= Gatsbyのテンプレートをダウンロードする
+高橋 T
+v1.0, 2019-06-15 15:00
+:page-category: プログラミング
+:page-thumbnail: /images/Gatsbyの環境構築方法/gatsby-logo.jpg
+
+こんにちは。
+Amazing engineでフロントエンド・サーバーサイドを担当する高橋と申します。当ブログの開発担当者です。
+
+前回はGatsbyの環境構築を行いました。今回の内容はlink:/gatsby-environment-construction-method/[**前回**]のGatsby環境構築が必須になります。まだのGatsby環境をお持ちでない方は、そちらから先に御覧ください。
+
+今回はGatsby公式が公開しているテンプレートをダウンロードし、簡易的なブログを構築したいと思います。
+
+= Gatsbyのテンプレート
+
+image::gatsby-starter-template/gatsby-library.png[]
+
+Gatsby公式はテンプレートを公開しています。テンプレートは数多く有り、非常に簡素なものから高機能のものまで幅広く存在します。
+
+一からサイトを構築するのはなかなか手間です。こちらのテンプレートから好みのものを選び、サイト構築のたたき台にすることをおすすめします。
+
+今回はこちらのテンプレートの一つである``gatsby-starter-blog``テンプレートを使い、簡単にブログサイトを構築します。
+
+その過程でGitというバージョン管理ソフトも使いますので、そちらも含めて説明いたします。
+
+= Git
+
+image::gatsby-starter-template/git-logo.png[]
+
+Gitはバージョン管理ソフトです。主にソースコードの管理に使われており、バージョン管理ソフトのデファクトスタンダードと言える存在です。
+
+このGitでソースコードを公開・管理するサービスとして、GitHubというサイトが有り、GatsbyやGatsbyのプラグインもここで公開されています。
+
+= Gitの環境構築
+まずは https://git-scm.com/[Git公式サイト]でGitをダウンロードします。
+
+image::gatsby-starter-template/git.png[]
+
+右下のパソコンの``Download \*.**,* for Mac``を押すと、ダウンロードが始まります。
+
+image::gatsby-starter-template/git2.png[]
+
+これでGitの.dmgファイルがダウンロードされました。
+
+(WindowsやLinuxの場合は違う拡張子の可能性があります）
+
+image::gatsby-starter-template/git3.png[]
+
+ファイルを開くと、インストーラーが起動します。各ページで任意の選択をしてインストールしてください。
+
+※権限の関係で警告が出ることがありますので、環境設定や``sudo``コマンドなどで権限を付与してください。
+
+image::gatsby-starter-template/git4.png[]
+image::gatsby-starter-template/git5.png[]
+image::gatsby-starter-template/git6.png[]
+image::gatsby-starter-template/git7.png[]
+image::gatsby-starter-template/git8.png[]
+image::gatsby-starter-template/git9.png[]
+
+これでGitがインストールできました。
+
+image::gatsby-starter-template/git10.png[]
+
+コマンドインタプリタを開いて、``git --version``を入力してください。
+
+image::gatsby-starter-template/git11.png[]
+
+``git version \*.**.*``という表示があればインストール完了です。
+
+= gatsby-starter-blogのダウンロード
+gatsby-starter-blogの操作はコマンドインタプリタで行います。
+
+任意のディレクトリで``git clone https://github.com/gatsbyjs/gatsby-starter-blog.git``を実行します。
+
+ダウンロードが完了するとgatsby-starter-blogというフォルダができます。
+
+続いて``cd gatsby-starter-blog``を入力します。これは現在の参照ディレクトリを変えるコマンドです。
+
+``npm install``を入力し、package.jsonに記述されたライブラリ群をインストールします。これでGatsbyやプラグインが入力されました。
+
+``gatsby develop``を入力すると、Gatsbyが静的サイトを生成します。
+
+image::gatsby-starter-template/gatsby-starter-blog1.png[]
+
+http://localhost:8000[http://localhost:8000/]へアクセスしてください。gatsby-starter-blogテンプレートが表示されるはずです。
+
+これでgatsbyのテンプレートがローカル環境に構築できました。
+
+= 記事作成
+せっかくなので記事を作成してみます。
+
+gatsby-starter-blogでは、``content``内の``blog``ディレクトリに記事が置かれています。形式はマークダウンという形式で、HTMLよりも記述性や可読性が高い軽量マークアップ言語です。
+
+Gatsbyはこれらのマークダウンファイルを読み取り、``gatsby-transformer-remark``というプラグインでHTMLに変換しています。
+
+では、まずは``blog``ディレクトリに移動します。``cd content/blog``とコマンドインタプリタに入力してください。これで``blog``ディレクトリに移動しました。
+
+続いて``mkdir sample``と入力します。これはblog内にsampleという名前のフォルダを作るコマンドです。
+
+続いて``cd sample``、``touch index.md``と入力します。``touch index.md``はindex.mdというファイルを生成するコマンドです。
+
+これでファイルの準備はできました。では、いよいよ記事を入力します。
+
+``open index.md``と入力することで、Markdownファイルを開きます。何らかのソフト(Xcodeなど)が起動したら、以下をコピー・ペーストしてください。
+
+```
+---
+title: Hello Gatsby
+date: "2015-05-01T22:12:03.284Z"
+---
+
+Hello Gatsby!
+```
+
+続いてGatsbyを起動します。``cd ../../../``と入力し、gatsby-starter-blogディレクトリに移動します。
+
+``gatsby develop``と入力してください。Gatsbyが立ち上がりました。
+
+image::gatsby-starter-template/hello-gatsby.png[]
+
+Gatsbyが処理を完了したら、http://localhost:8000[http://localhost:8000/]へアクセスしてください。"Hello Gatsby"という記事が表示されたのが確認できたでしょうか。
+
+お疲れ様でした。
+
+これでGatsbyの簡易的なブログができました。
