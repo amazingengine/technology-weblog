@@ -118,7 +118,8 @@ Hello Gatsby!
 
 image::gatsby-starter-template/hello-gatsby.png[]
 
-Gatsbyが処理を完了したら、http://localhost:8000[http://localhost:8000/]へアクセスしてください。sampleという記事ができたのが確認できたでしょうか。
+Gatsbyが処理を完了したら、http://localhost:8000[http://localhost:8000/]へアクセスしてください。"Hello Gatsby"という記事が表示されたのが確認できたでしょうか。
 
 お疲れ様でした。
+
 これでGatsbyの簡易的なブログができました。
