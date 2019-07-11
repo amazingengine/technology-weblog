@@ -1,0 +1,292 @@
+= KubernetesでRedis永続ストレージをもったRedisを建てよう
+kuzunoha-ne
+v1.0, 2019-07-10 17:30
+:page-category: インフラ
+:page-thumbnail: /images/logos/kubernetes.png
+
+## はじめに +
+
+こんばんは、私は葛ノ葉と言います。 +
+
+Amazing engine株式会社では英語試験問題-EnglishPassedという英語を勉強できるサービスを提供します。そのサービスにはKubernetesというオーケストレーションツールを使用しています。英語問題文についてはデータベースにRedisを使用しています。リレーショナル・データベースではなくKVSのRedisを選んだ理由は後ほど話すとして、今回はそのRedisをKubernetes上でどのように立ち上げるかを記載していきます。 +
+
+## 必要なもの +
+
+Ubuntu 18.04 +
+minikube v1.2.0 +
+docker 18.09.7 +
+redis-cli 4.0.9 +
+インターネットに繋がっている環境 +
+
+## minikubeを起動してDockerと紐付ける
+
+`minikube start` を使ってminikubeを起動しましょう。 +
+
+....
+[kuzunoha@:17:40:40:~]$ minikube start
+😄  minikube v1.2.0 on linux (amd64)
+💡  Tip: Use 'minikube start -p <name>' to create a new cluster, or 'minikube delete' to delete this one.
+🔄  Restarting existing virtualbox VM for "minikube" ...
+⌛  Waiting for SSH access ...
+🐳  Configuring environment for Kubernetes v1.15.0 on Docker 18.09.6
+🔄  Relaunching Kubernetes v1.15.0 using kubeadm ...
+⌛  Verifying: apiserver proxy etcd scheduler controller dns
+🏄  Done! kubectl is now configured to use "minikube"
+....
+
+`Done! kubectl is now configured to use "minikube"` と表示されればminikubeは起動完了です。 +
+
+それからminikubeとDockerを紐付けましょう。
+
+`minikube docker-env` と入力すると以下のような出力があるはずです。
+
+....
+[kuzunoha@:17:43:17:~]$ minikube docker-env
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.99.100:2376"
+export DOCKER_CERT_PATH="/home/kuzunoha/.minikube/certs"
+# Run this command to configure your shell:
+# eval $(minikube docker-env)
+....
+
+`eval $(minikube docker-env)` と記載があります。これを実施することでminikubeとdockerを紐付けることが出来ます。
+
+....
+[kuzunoha@:17:48:44:~]$ eval $(minikube docker-env)
+[kuzunoha@:17:48:47:~]$ <- すぐにコマンドが返ってくる。
+....
+
+なお、このBashから抜けたりした場合は `eval $(minikube docker-env)` の効果はなくなります。 +
+
+以後は特別な記載をしない限りこのBashで操作していきます。 +
+
+## Redisイメージを取得する
+
+`docker pull redis:5.0.3` と打ち、DockerHubからRedisイメージを取得します。 +
+
+....
+[kuzunoha@:18:11:43:~]$ docker pull redis:5.0.3
+5.0.3: Pulling from library/redis
+f7e2b70d04ae: Pull complete
+421427137c28: Pull complete
+4af7ef63ef0f: Pull complete
+b858087b3517: Pull complete
+2aaf1944f5eb: Pull complete
+8270b5c7b90d: Pull complete
+Digest: sha256:4be7fdb131e76a6c6231e820c60b8b12938cf1ff3d437da4871b9b2440f4e385
+Status: Downloaded newer image for redis:5.0.3
+....
+
+`docker image ls` と入力すればいくつかのDockerイメージと共に `redis` イメージが出力されます。 +
+
+....
+[kuzunoha@:18:33:00:~]$ docker image ls | grep redis
+redis                                     5.0.3               0f88f9be5839        4 months ago        95MB
+....
+
+minikube上にredis:5.0.3イメージをPullすることが出来ました。次はredisイメージを使ってStatefulSetオブジェクトをデプロイします。
+
+## StatefulSetオブジェクトのマニフェストを作る
+
+Kubernetesには `StatefulSet` というオブジェクトが存在します。これは `永続ストレージ` を持つことが出来る `Pod` オブジェクトだと思って貰えればわかりやすいです。StatefulSetと含め、Kubernetesでオブジェクトを作成するにはマニフェストという `yamlファイル` を作成し、これをKubernetesに適応させることが基礎的な方法になります。 +
+
+マニフェストのファイル名は好きな名前で大丈夫です。今回作成するオブジェクトは `Redisイメージを持ったStatefulSet` のため、ファイル名は `st_redis.yaml` としましょう。 +
+
+....
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-master
+spec:
+  serviceName: "redis-master"
+  replicas: 1
+  selector:
+    matchLabels:
+        pj: project
+  template:
+    metadata:
+      labels:
+          pj: project
+    spec:
+      containers:
+      - name: master
+        image: redis:5.0.3
+        command: ["redis-server"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: datapath
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: datapath
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+....
+
+上記yamlファイルが出来たら `kubectl apply -f st_redis.yaml` とコマンドを入力し、StatefulSetをデプロイします。 +
+
+....
+[kuzunoha@:10:07:14:~]$ kubectl apply  -f st_redis.yaml
+statefulset.apps/test-project created
+....
+
+`kubectl get statefulset` と入力することでStatefulSetの情報が取得できます。 +
+
+....
+[kuzunoha@:10:18:36:~]$ kubectl get statefulset
+NAME           READY     AGE
+redis-master   1/1       4m36s
+....
+
+StatefulSetは `Pod` オブジェクトを作成します。 `kubectl get pods` と入力しましょう。 +
+
+....
+[kuzunoha@:10:18:37:~]$ kubectl get pods
+NAME             READY     STATUS    RESTARTS   AGE
+redis-master-0   1/1       Running   0          4m53s
+....
+
+PodオブジェクトとはDockerコンテナと思ってもらえればわかりやすいと思います。StatefulSetは `PersistentVolume` オブジェクトも作成します。 `kubectl get pv` と入力しましょう。 +
+
+....
+[kuzunoha@:10:26:18:~]$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM                             STORAGECLASS   REASON    AGE
+pvc-0354be5e-8405-4e86-8ab3-08ae52cf030e   1Gi        RWO            Delete           Bound     default/datapath-redis-master-0   standard                 12m
+....
+
+PersistentVolumeオブジェクトとは永続ストレージのことで、このオブジェクトに実際のRedisのデータが保存されます。StatefulSetは `PersistentVolumeClaim` オブジェクトも作成します。 `kubectl get pvc` と入力しましょう。 +
+
+....
+[kuzunoha@:10:26:21:~]$ kubectl get pvc
+NAME                      STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+datapath-redis-master-0   Bound     pvc-0354be5e-8405-4e86-8ab3-08ae52cf030e   1Gi        RWO            standard       18m
+....
+
+PersistentVolumeClaimオブジェクトとはPodとPersistentVolumeオブジェクトを紐付けるためのオブジェクトです。 +
+
+## Serviceオブジェクトのマニフェストを作る
+
+KubernetesにはPodオブジェクトと通信をするための `Service` というインフラ用のオブジェクトが存在します。外部のネットワークからPodと通信を行うためのオブジェクトになります。さきほど作成したRedisのStatefulSetオブジェクトと通信出来るように、Serviceを構築しましょう。Serviceを構築するにはマニフェストが必要です。 +
+
+`svc_redis.yaml` という名前で、以下の内容の `yaml` ファイルを作成します。 +
+
+....
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  labels:
+    pj: project
+spec:
+  type: NodePort
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    pj: project
+....
+
+`kubectl apply -f svc_redis.yaml` と入力し、デプロイをします。 +
+
+....
+[kuzunoha@:11:29:05:~]$ kubectl apply -f svc_redis.yaml 
+service/redis-master created
+....
+
+`kubectl get svc` と入力をし、作成したServiceを表示します。 +
+
+....
+[kuzunoha@:11:29:13:~/mine/type]$ kubectl get svc
+NAME           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          15d
+redis-master   NodePort    10.99.220.25   <none>        6379:31914/TCP   26s
+....
+
+これでネットワークから接続出来るようになりました。 +
+
+`minikube service redis-master --url` と入力をしてURLを表示します。 +
+
+....
+[kuzunoha@:11:47:58:~]$ minikube service redis-master --url
+http://192.168.99.100:31914
+....
+
+今回は `192.168.99.100:31914` という部分だけを使用します。 +
+
+`redis-cli` を使って `redis-cli -h 192.168.99.100 -p 31914` と入力しましょう。アクセスが出来ます。
+
+....
+[kuzunoha@:11:48:02:~]$ redis-cli -h 192.168.99.100 -p 31914
+192.168.99.100:31914> 
+....
+
+`set hoge piyo` として、 `hoge` Keyに `piyo` という値を入力します。 +
+
+....
+192.168.99.100:31914> set hoge piyo
+OK
+....
+
+`get hoge` とすれば `piyo` と値が返ります。 +
+
+....
+192.168.99.100:31914> get hoge
+"piyo"
+....
+
+`python` で `redis.py` というモジュールをインストールしているならば、以下のように確認も出来ます。 +
+
+....
+[kuzunoha@:11:57:21:~]$ python
+Python 3.6.6 (default, Sep 22 2018, 22:40:03)
+[GCC 7.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import redis
+>>> r = redis.Redis(host="192.168.99.100", port=31914)
+>>> r.get("hoge")
+b'piyo'
+>>>
+....
+
+`b'piyo'` と値が返ってきました。 `b` はpythonでbyte型という形式を表しています。 +
+
+## Podが死んでもデータは生きている
+
+StatefulSetの特徴はPVとPVCという永続ストレージを設定できる点です。Podとは別にボリュームを持っているわけですから、Podが壊れても、PVには影響はありません。実際にPodを破壊してみましょう。 +
+
+`kubectl delete pod redis-master-0` とすればPodを消すことが出来ます。
+
+....
+[kuzunoha@:12:01:36:~]$ kubectl delete pods redis-master-0
+pod "redis-master-0" deleted
+[kuzunoha@:12:05:27:~]$ kubectl get pod
+NAME             READY     STATUS              RESTARTS   AGE
+redis-master-0   0/1       ContainerCreating   0          2s
+[kuzunoha@:12:05:28:~]$ kubectl get pod
+NAME             READY     STATUS    RESTARTS   AGE
+redis-master-0   1/1       Running   0          4s
+....
+
+少しわかりにくいことが起きたかも知れませんが、StatefulSetはPodを監視していて、設定された数に満たない場合はPodを自動で新たに作り出すという動作をすることが出来ます。今回、 `kubectl delete pod redis-master-0` としたことで、一度Podは消されました。しかし、上記の動作によって新しいPodが作成されました。 `AGE` 行が4sとなっているのは、Podが作成されてから4秒しか経過していないということです。 +
+
+それでは再び `redis-cli` を使ってデータを確認してみます。 +
+
+....
+[kuzunoha@:12:05:30:~]$ redis-cli -h 192.168.99.100 -p 31914
+192.168.99.100:31914> get hoge
+"piyo"
+....
+
+このように `piyo` が返ってきました。 +
+
+## Kubernetes上でデータベースを構築するということ
+
+KubernetesでRedisServiceを立ち上げることが出来ました。yamlファイルをうまく使えればKubernetesでPodを立ち上げることが出来ます。次回は簡易的なWebアプリケーションをデプロイし、今回、デプロイしたRedisServiceからデータを取得し表示してみましょう。
