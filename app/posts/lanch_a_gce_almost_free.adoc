@@ -228,6 +228,9 @@ https://english.passed.jp/
 皆さんはどのくらいの英語力なのでしょうか…
 きっとcacaponよりすごいのでしょう～
 
+…あ、ちなみに以前のブログ  link:/build-redis-with-redis-persistent-storage-at-kubernetes/[KubernetesでRedis永続ストレージをもったRedisを建てよう]  +
+ではKubernetesで動作させていたのですが、本ブログからDockerで動かしております～
+
 ## おわりに
 
 ここまででGCPを使ったLinuxの立ち上げまでを順を追って説明しましたが、
