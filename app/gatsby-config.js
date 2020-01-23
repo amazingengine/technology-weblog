@@ -1,14 +1,21 @@
+let activeEnv =
+  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || 'development'
+require('dotenv').config({
+  path: `.env.${activeEnv}`,
+})
 module.exports = {
   siteMetadata: {
     title: `Amazing engine Co., Ltd. technology weblog`,
     description: `This is Amazing engine Co., Ltd. technology weblog. We write to here some technological wisdom.`,
     titleTemplate: 'Ae tech blog',
-    url:'https://tech.amazingengine.co.jp',
+    url: `https://${process.env.DOMAIN}`,
+    siteUrl: `https://${process.env.DOMAIN}`,
     image: '/assets/amazingengine-icon',
     pathname: 'null',
     article: 'null',
   },
   plugins: [
+    `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -52,9 +59,17 @@ module.exports = {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         // replace "UA-XXXXXXXXX-X" with your own Tracking ID
-        trackingId: "UA-63016157-4",
+        trackingId: process.env.GA_TRACKING_ID,
         head: true,
       },
+    },
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        host: `https://${process.env.DOMAIN}`,
+        sitemap: `https://${process.env.DOMAIN}/sitemap.xml`,
+        policy: [{ userAgent: '*', allow: '/' }]
+      }
     },
   ],
 }
